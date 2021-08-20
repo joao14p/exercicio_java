@@ -1,0 +1,68 @@
+package application;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Scanner;
+
+import entities.Employees;
+
+public class Program {
+
+	public static void main(String[] args) {
+		
+		Locale.setDefault(Locale.US);
+		Scanner sc = new Scanner(System.in);
+		
+		List<Employees> lista = new ArrayList<>();
+		
+		System.out.printf("Quantos funcionários deseja cadastrar? ");
+		int n = sc.nextInt();
+		sc.nextLine();
+		
+		for (int i = 1; i<=n; i++) {
+			System.out.println("Employee #" + i + ":");
+			System.out.print("Id: ");
+			int id = sc.nextInt();
+			while (hasId(lista, id)) {
+				System.out.print("Este Id já está em uso, escolha outro: ");
+				id = sc.nextInt();
+			}
+			
+			System.out.print("Nome: ");
+			sc.nextLine();
+			String nome = sc.nextLine();
+			System.out.print("Salário: ");
+			double salario = sc.nextDouble();
+			sc.nextLine();
+			lista.add(new Employees(id, nome, salario));	
+		}
+		
+		System.out.println();
+		System.out.print("Digite o Id do funcionário que deseja atribuir o aumento: ");
+		int id = sc.nextInt();
+		Employees emp = lista.stream().filter(x -> x.getId() == id).findFirst().orElse(null);
+		if (emp == null) {
+			System.out.println("Esse Id não existe!");
+		} else {
+			System.out.print("Qual a porcentagem de aumento deseja atribuir? ");
+			double p = sc.nextDouble();
+			emp.aumentarSalario(p);
+		}
+		
+		System.out.println();
+		System.out.println("Lista de funcionários:");
+		for(Employees obj:lista) {
+			System.out.println(obj);
+		}
+				
+		
+		sc.close();
+	}
+
+	public static boolean hasId(List<Employees> lista, int id) {
+		Employees emp = lista.stream().filter(x -> x.getId() == id).findFirst().orElse(null);
+		return emp != null;
+	}
+	
+}
